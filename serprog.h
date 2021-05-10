@@ -34,12 +34,12 @@
   (1 << S_CMD_Q_SERBUF)  | \
   (1 << S_CMD_Q_BUSTYPE) | \
   (1 << S_CMD_SYNCNOP)   | \
-  (1 << S_CMD_O_SPIOP)   | \
-  (1 << S_CMD_S_BUSTYPE) | \
-  (1 << S_CMD_S_SPI_FREQ)| \
-  (1 << S_CMD_S_PIN_STATE) \
+  (1 << S_CMD_S_BUSTYPE)   	| \
+  (1 << S_CMD_O_SPIOP)   	| \
+  (1 << S_CMD_S_SPI_FREQ)	\
 )
-#define SERPROG_BUFFER_SIZE (64*1024*1024)
+
+#define SERPROG_BUFFER_SIZE (0xffff)	//64K
 
 enum chipbustype {
 	BUS_NONE	= 0,
@@ -56,7 +56,8 @@ enum chipbustype {
 
 typedef struct serprog_answer
 {
-    uint8_t ack;
+    uint8_t cmd;
+	uint8_t ack;
 
     void *params;
     uint32_t parmlen;
@@ -64,24 +65,33 @@ typedef struct serprog_answer
     void *retparms;
     uint32_t retlen;
 
-    int (*answer)(uint8_t answer, uint8_t cmd, uint32_t parmlen,
+    int (*answer)(uint8_t cmd, uint8_t ack, uint32_t parmlen,
 			uint8_t *params, uint32_t retlen, void *retparms);
 
-    int (*read)(uint8_t answer, uint32_t parmlen,
-			uint8_t *params, uint32_t retlen, void *retparms);
-
-    int (*write)(uint8_t answer, uint32_t parmlen,
-			uint8_t *params, uint32_t retlen, void *retparms);        
 }serprog_answer_t;
 
-#define ANSWER_DECLARE(_ack, _params, _parmlen, _retparms, _retlen, _answer, _read, _write) \
+/* 定义返回ACK的响应 */
+#define ACK_ANSWER_DECLARE(_cmd, _params, _parmlen, _retparms, _retlen, _answer) \
 	{\
-		.ack = _ack, \
+		.cmd = _cmd, \
+		.ack = S_ACK,	\
 		.params = _params, \
 		.parmlen = _parmlen, \
 		.retparms = _retparms, \
 		.retlen = _retlen, \
 		.answer = _answer, \
-		.read = _read, \
-		.write = _write, \
 	}
+
+/* 定义返回NO ACK的响应 */
+#define NAK_ANSWER_DECLARE(_cmd, _params, _parmlen, _retparms, _retlen, _answer) \
+	{\
+		.cmd = _cmd, \
+		.ack = S_NAK,	\
+		.params = _params, \
+		.parmlen = _parmlen, \
+		.retparms = _retparms, \
+		.retlen = _retlen, \
+		.answer = _answer, \
+	}
+
+int handle_cmd(uint8_t cmd);
