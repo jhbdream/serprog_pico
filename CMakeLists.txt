@@ -8,9 +8,10 @@ pico_sdk_init()
 
 add_executable(serprog
   main.c
-  usb_descriptors.c
+  led.c
   serprog.c
   serial.c
+  usb_descriptors.c
 )
 
 target_include_directories(serprog PRIVATE ${CMAKE_CURRENT_LIST_DIR})

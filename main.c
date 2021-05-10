@@ -11,12 +11,12 @@
 #include "tusb.h"
 
 #include "serprog.h"
+#include "led.h"
 
 static void cdc_task(void);
 
 int main()
 {
-
     board_init();
     tusb_init();
 
@@ -24,6 +24,8 @@ int main()
     {
         tud_task(); // tinyusb device task
         cdc_task();
+
+        led_blinking_task();
     }
 }
 
