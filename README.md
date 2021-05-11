@@ -37,4 +37,7 @@ flashrom 支持通过该协议与下位机设备通讯，实现flash的操作功
 
 ```shell
 flashrom -p serprog:dev=/dev/ttyACM0:4000000
+
+flashrom -p serprog:dev=/dev/ttyACM0:4000000,spispeed=1000 -c S25FL128P......0
+
 ```

@@ -20,4 +20,4 @@ target_link_libraries(serprog PRIVATE pico_stdlib tinyusb_device tinyusb_board)
 pico_add_extra_outputs(serprog)
 
 pico_enable_stdio_usb(serprog 0)
-pico_enable_stdio_uart(serprog 0)
+pico_enable_stdio_uart(serprog 1)

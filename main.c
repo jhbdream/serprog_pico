@@ -12,19 +12,21 @@
 
 #include "serprog.h"
 #include "led.h"
+#include "serial.h"
 
 static void cdc_task(void);
 
 int main()
 {
-    board_init();
-    tusb_init();
+    stdio_uart_init();
+    led_blinking_init();
+    serprog_usb_init();
+
+    printf("board init ok!\n");
 
     while (1)
     {
-        tud_task(); // tinyusb device task
         cdc_task();
-
         led_blinking_task();
     }
 }
@@ -46,14 +48,13 @@ static void echo_serial_port(uint8_t itf, uint8_t buf[], uint32_t count)
 static void cdc_task(void)
 {
     static uint8_t itf = 0;
+    static int cmd;
 
     if (tud_cdc_n_connected(itf))
     {
         if (tud_cdc_n_available(itf))
         {
-            uint8_t cmd;
             cmd = tud_cdc_n_read_char(itf);
-            echo_serial_port(1, &cmd, 1);
             handle_cmd(cmd);
         }
     }

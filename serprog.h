@@ -39,6 +39,8 @@
   (1 << S_CMD_S_SPI_FREQ)	\
 )
 
+#define SERPROG_NAME ("pico serprog")
+
 #define SERPROG_BUFFER_SIZE (0xffff)	//64K
 
 enum chipbustype {
@@ -59,11 +61,11 @@ typedef struct serprog_answer
     uint8_t cmd;
 	uint8_t ack;
 
-    void *params;
     uint32_t parmlen;
+    void *params;
 
-    void *retparms;
     uint32_t retlen;
+    void *retparms;
 
     int (*answer)(uint8_t cmd, uint8_t ack, uint32_t parmlen,
 			uint8_t *params, uint32_t retlen, void *retparms);
@@ -71,26 +73,26 @@ typedef struct serprog_answer
 }serprog_answer_t;
 
 /* 定义返回ACK的响应 */
-#define ACK_ANSWER_DECLARE(_cmd, _params, _parmlen, _retparms, _retlen, _answer) \
+#define ACK_ANSWER_DECLARE(_cmd, _parmlen, _params, _retlen, _retparms, _answer) \
 	{\
 		.cmd = _cmd, \
 		.ack = S_ACK,	\
-		.params = _params, \
 		.parmlen = _parmlen, \
-		.retparms = _retparms, \
+		.params = _params, \
 		.retlen = _retlen, \
+		.retparms = _retparms, \
 		.answer = _answer, \
 	}
 
 /* 定义返回NO ACK的响应 */
-#define NAK_ANSWER_DECLARE(_cmd, _params, _parmlen, _retparms, _retlen, _answer) \
+#define NAK_ANSWER_DECLARE(_cmd, _parmlen, _params, _retlen, _retparms, _answer) \
 	{\
 		.cmd = _cmd, \
 		.ack = S_NAK,	\
-		.params = _params, \
 		.parmlen = _parmlen, \
-		.retparms = _retparms, \
+		.params = _params, \
 		.retlen = _retlen, \
+		.retparms = _retparms, \
 		.answer = _answer, \
 	}
 
