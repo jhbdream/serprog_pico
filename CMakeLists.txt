@@ -12,10 +12,17 @@ add_executable(serprog
   serprog.c
   serial.c
   usb_descriptors.c
+  spi_dma.c
 )
 
 target_include_directories(serprog PRIVATE ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(serprog PRIVATE pico_stdlib tinyusb_device tinyusb_board)
+target_link_libraries(serprog PRIVATE
+  pico_stdlib
+  tinyusb_device
+  tinyusb_board
+  hardware_spi
+  hardware_dma
+)
 
 pico_add_extra_outputs(serprog)
 

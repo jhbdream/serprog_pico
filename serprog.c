@@ -76,6 +76,19 @@ serprog_answer_t serprog_handle[S_CMD_NUM] =
                             4, params_buf, spi_freq_set),
 };
 
+/**
+ * @brief 处理普通命令
+ *          PC: COMMAND
+ *          DEVICE: ACK/NAK + PARAMTER
+ *
+ * @param cmd
+ * @param ack
+ * @param parmlen
+ * @param params
+ * @param retlen
+ * @param retparms
+ * @return int
+ */
 static int process_answer(uint8_t cmd, uint8_t ack, uint32_t parmlen,
 			uint8_t *params, uint32_t retlen, void *retparms)
 {
@@ -92,6 +105,19 @@ static int process_answer(uint8_t cmd, uint8_t ack, uint32_t parmlen,
 	return 0;
 }
 
+/**
+ * @brief 处理数据传输命令
+ *          PC: COMMAND + 3byte writecnt 3byte readcnt + nbyte write_date
+ *          DEVICE: ACK + rlen bytes of data / NAK
+ *
+ * @param cmd
+ * @param ack
+ * @param parmlen
+ * @param params
+ * @param retlen
+ * @param retparms
+ * @return int
+ */
 static int process_spi_operation(uint8_t cmd, uint8_t ack, uint32_t parmlen,
 			uint8_t *params, uint32_t retlen, void *retparms)
 {

@@ -13,6 +13,7 @@
 #include "serprog.h"
 #include "led.h"
 #include "serial.h"
+#include "spi_dma.h"
 
 static void cdc_task(void);
 
@@ -21,6 +22,8 @@ int main()
     stdio_uart_init();
     led_blinking_init();
     serprog_usb_init();
+    board_spi_init();
+    spi_flash_rdid();
 
     printf("board init ok!\n");
 
