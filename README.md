@@ -47,16 +47,16 @@ flashrom 支持通过该协议与下位机设备通讯，实现flash的操作功
 
 ```shell
 探测flash芯片
-flashrom -p serprog:dev=/dev/ttyACM0:4000000
+flashrom -p serprog:dev=/dev/ttyACM0
 
 写入flash芯片 part1 地址范围内容
-flashrom -p serprog:dev=/dev/ttyACM0:4000000,spispeed=31250000 --layout rom.layout --image part1 -w test.bin
+flashrom -p serprog:dev=/dev/ttyACM0,spispeed=31250000 --layout rom.layout --image part1 -w test.bin
 
 擦除flash芯片 part1 地址范围内容
-flashrom -p serprog:dev=/dev/ttyACM0:4000000,spispeed=31250000 --layout rom.layout --image part1 -E
+flashrom -p serprog:dev=/dev/ttyACM0,spispeed=31250000 --layout rom.layout --image part1 -E
 
 读取flash芯片 part1 地址范围内容
-flashrom -p serprog:dev=/dev/ttyACM0:4000000,spispeed=31250000 --layout rom.layout --image part1 -r file.bin
+flashrom -p serprog:dev=/dev/ttyACM0,spispeed=31250000 --layout rom.layout --image part1 -r file.bin
 ```
 
 
@@ -76,7 +76,7 @@ startaddr:endaddr name
 
 - 使用 **--layout rom.layout** 指定使用的layout文件为rom.layout
 - 使用 **--image name**  指定要操作的layout文件中的区域名称
-- 使用 **-w filename** 将指定问价写入到flash中，可以通过layout文件实现局部写入，但是指定的文件大小需要与flash芯片容量大小相同 
+- 使用 **-w filename** 将指定问价写入到flash中，可以通过layout文件实现局部写入，但是指定的文件大小需要与flash芯片容量大小相同
 - 使用 **-E**参数擦除flash芯片
 - 使用**-r filename**命令读取flash芯片内容
 - **spispeed=31250000** 指定spi时钟频率，需要下位机提供支持
@@ -93,9 +93,8 @@ startaddr:endaddr name
 #define PIN_CS  5
 ```
 
-
-
 #### 参考资料：
 
-参考了基于stm32的flashrom项目实现：[stm32-vserprog](https://github.com/dword1511/stm32-vserprog)
+基于stm32的flashrom项目   [stm32-vserprog](https://github.com/dword1511/stm32-vserprog)
 
+flashrom上位机项目   [flashrom](https://github.com/flashrom/flashrom)
