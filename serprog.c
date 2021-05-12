@@ -6,6 +6,7 @@
 #include "pico/stdlib.h"
 #include "serprog.h"
 #include "serial.h"
+#include "spi_dma.h"
 
 static int process_answer(uint8_t cmd, uint8_t ack, uint32_t parmlen,
 			uint8_t *params, uint32_t retlen, void *retparms);
@@ -151,7 +152,7 @@ static int spi_freq_set(uint8_t cmd, uint8_t ack, uint32_t parmlen,
     f_spi_req |= params[2] << (2 * 8);
     f_spi_req |= params[3] << (3 * 8);
 
-    f_spi = f_spi_req;
+    f_spi = spi_freq_config(f_spi_req);
 
     buf[0] = (f_spi >> (0 * 8)) & 0xFF;
     buf[1] = (f_spi >> (1 * 8)) & 0xFF;

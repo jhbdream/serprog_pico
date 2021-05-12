@@ -128,6 +128,11 @@ void spi_cs_deselect()
     cs_deselect(PIN_CS);
 }
 
+uint32_t spi_freq_config(uint32_t freq)
+{
+    return spi_set_baudrate(SPI_PORT, freq);
+}
+
 void spi_flash_rdid()
 {
     char tx_buf[1] = {0x9f};

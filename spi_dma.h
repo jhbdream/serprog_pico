@@ -14,6 +14,7 @@ void spi_dma_write(char *buf, uint32_t len);
 void spi_dma_read(char *buf, uint32_t len);
 void spi_cs_select();
 void spi_cs_deselect();
+uint32_t spi_freq_config(uint32_t freq);
 void spi_flash_rdid();
 
 #endif
