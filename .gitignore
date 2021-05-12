@@ -64,3 +64,5 @@ CTestTestfile.cmake
 _deps
 .vscode/
 build/
+
+*.bin

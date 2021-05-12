@@ -31,7 +31,21 @@ static uint8_t ack = (uint8_t)S_ACK;
 static uint8_t no_ack = (uint8_t)S_NAK;
 static uint8_t params_buf[16];
 
-static uint32_t spi_freq;
+static uint8_t max_write_n[3] =
+{
+    [0] = (SERPROG_MAX_WRITE_N >> (0 * 8)) & 0xFF,
+    [1] = (SERPROG_MAX_WRITE_N >> (1 * 8)) & 0xFF,
+    [2] = (SERPROG_MAX_WRITE_N >> (2 * 8)) & 0xFF
+};
+
+static uint8_t max_read_n[3] =
+{
+    [0] = (SERPROG_MAX_READ_N >> (0 * 8)) & 0xFF,
+    [1] = (SERPROG_MAX_READ_N >> (1 * 8)) & 0xFF,
+    [2] = (SERPROG_MAX_READ_N >> (2 * 8)) & 0xFF
+};
+
+static uint8_t dma_buf[SERPROG_MAX_OP_N];
 
 static int sp_check_commandavail(uint8_t command)
 {
@@ -61,6 +75,12 @@ serprog_answer_t serprog_handle[S_CMD_NUM] =
     [S_CMD_Q_BUSTYPE]   = ACK_ANSWER_DECLARE(S_CMD_Q_BUSTYPE, 0, NULL,
                             sizeof(serprog_bus_type), &serprog_bus_type, process_answer),
 
+    [S_CMD_Q_WRNMAXLEN]   = ACK_ANSWER_DECLARE(S_CMD_Q_WRNMAXLEN, 0, NULL,
+                            sizeof(max_write_n), max_write_n, process_answer),
+
+    [S_CMD_Q_RDNMAXLEN]   = ACK_ANSWER_DECLARE(S_CMD_Q_RDNMAXLEN, 0, NULL,
+                            sizeof(max_read_n), max_read_n, process_answer),
+
     [S_CMD_SYNCNOP]     = NAK_ANSWER_DECLARE(S_CMD_SYNCNOP, 0, NULL,
                             sizeof(ack), &ack, process_answer),
 
@@ -70,7 +90,7 @@ serprog_answer_t serprog_handle[S_CMD_NUM] =
 
     /* 3字节写长度 3字节读长度 3字节写地址 */
     [S_CMD_O_SPIOP]     = ACK_ANSWER_DECLARE(S_CMD_O_SPIOP, 6, params_buf,
-                            0, NULL, process_answer),
+                            0, NULL, process_spi_operation),
 
     /* 4字节设置频率 4字节返回频率 */
     [S_CMD_S_SPI_FREQ]  = ACK_ANSWER_DECLARE(S_CMD_S_SPI_FREQ, 4, params_buf,
@@ -122,15 +142,35 @@ static int process_answer(uint8_t cmd, uint8_t ack, uint32_t parmlen,
 static int process_spi_operation(uint8_t cmd, uint8_t ack, uint32_t parmlen,
 			uint8_t *params, uint32_t retlen, void *retparms)
 {
-
-    /* 发送 ack/ noack */
-    serialport_write(&ack, 1);
+    static uint32_t writecnt, readcnt;
 
     /* 读取命令携带的内容 */
     serialport_read(params, parmlen);
 
+    writecnt = params[0];
+    writecnt |= params[1] << (1 * 8);
+    writecnt |= params[2] << (2 * 8);
+
+    readcnt = params[3];
+    readcnt |= params[4] << (1 * 8);
+    readcnt |= params[5] << (2 * 8);
+
+    printf("writecnt: %d\n", writecnt);
+    printf("readcnt: %d\n", readcnt);
+    serialport_read(dma_buf, writecnt);
+
+    spi_cs_select();
+
+    spi_dma_write(dma_buf, writecnt);
+    spi_dma_read(dma_buf, readcnt);
+
+    spi_cs_deselect();
+
+    /* 发送 ack/ noack */
+    serialport_write(&ack, 1);
+
     /* 返回内容 */
-    serialport_write(retparms, retlen);
+    serialport_write(dma_buf, readcnt);
 
 	return 0;
 }

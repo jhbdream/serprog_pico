@@ -54,7 +54,9 @@ enum chipbustype {
 };
 
 #define SERPROG_BUS_TYPE BUS_SPI
-#define SERPROG_MAX_WRITE_N 0
+#define SERPROG_MAX_WRITE_N (256)
+#define SERPROG_MAX_READ_N (64 * 1024)
+#define SERPROG_MAX_OP_N (64 * 1024)
 
 typedef struct serprog_answer
 {
