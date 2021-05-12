@@ -69,9 +69,6 @@ serprog_answer_t serprog_handle[S_CMD_NUM] =
     [S_CMD_Q_PGMNAME]   = ACK_ANSWER_DECLARE(S_CMD_Q_PGMNAME, 0, NULL,
                             sizeof(serprog_name), &serprog_name, process_answer),
 
-    [S_CMD_Q_SERBUF]    = ACK_ANSWER_DECLARE(S_CMD_Q_SERBUF, 0, NULL,
-                            sizeof(serprog_buffer_size), &serprog_buffer_size, process_answer),
-
     [S_CMD_Q_BUSTYPE]   = ACK_ANSWER_DECLARE(S_CMD_Q_BUSTYPE, 0, NULL,
                             sizeof(serprog_bus_type), &serprog_bus_type, process_answer),
 
@@ -155,8 +152,6 @@ static int process_spi_operation(uint8_t cmd, uint8_t ack, uint32_t parmlen,
     readcnt |= params[4] << (1 * 8);
     readcnt |= params[5] << (2 * 8);
 
-    printf("writecnt: %d\n", writecnt);
-    printf("readcnt: %d\n", readcnt);
     serialport_read(dma_buf, writecnt);
 
     spi_cs_select();

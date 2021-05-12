@@ -31,8 +31,9 @@
   (1 << S_CMD_Q_IFACE)   | \
   (1 << S_CMD_Q_CMDMAP)  | \
   (1 << S_CMD_Q_PGMNAME) | \
-  (1 << S_CMD_Q_SERBUF)  | \
   (1 << S_CMD_Q_BUSTYPE) | \
+  (1 << S_CMD_Q_RDNMAXLEN) | \
+  (1 << S_CMD_Q_WRNMAXLEN) | \
   (1 << S_CMD_SYNCNOP)   | \
   (1 << S_CMD_S_BUSTYPE)   	| \
   (1 << S_CMD_O_SPIOP)   	| \
